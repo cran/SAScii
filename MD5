@@ -1,0 +1,8 @@
+6deda799f75900ddd9bb232d3debbdcd *DESCRIPTION
+f264e660861cce081b482638f920f21e *NAMESPACE
+b29f9b80e01c6eba28a20bd4091ba5a1 *R/SAS.uncomment.R
+820647010fcf5d31fccda9a4fa4cf14b *R/parse.SAScii.R
+5149efff101830850d2196a0eb07d1b3 *R/read.SAScii.R
+a4eaf8bf6c56ef2bfe9a823f373210a6 *man/SAScii-package.Rd
+f722ea72886aaf4b71d525acebe84548 *man/parse.SAScii.Rd
+34bab67873d0df985179d69057d972ee *man/read.SAScii.Rd
