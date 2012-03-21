@@ -1,5 +1,5 @@
 read.SAScii <- 
-function( fn , sas_ri , beginline = 1 , buffersize = 50 , zipped = F ){
+function( fn , sas_ri , beginline = 1 , buffersize = 50 , zipped = F , n = -1 ){
 #read.SAScii uses a smaller buffersize than the usual FWF default, to handle larger datasets
 
 
@@ -27,7 +27,8 @@ function( fn , sas_ri , beginline = 1 , buffersize = 50 , zipped = F ){
 							col.names=y$varname , 
 							comment.char = '' , 
 							colClasses = ifelse( y$char , 'character' , 'numeric' ) , 
-							buffersize = buffersize
+							buffersize = buffersize , 
+							n = n
 						)
 
 	#divide by the divisor whenever necessary

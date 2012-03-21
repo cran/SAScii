@@ -7,7 +7,7 @@ Create an R data frame by reading in an ASCII file and SAS import instructions
 Using importation code designed for SAS users to read ASCII files into sas7bdat files, the read.SAScii function parses through the INPUT block of a (.sas) syntax file to design the parameters needed for a read.fwf function call, and then runs that command.  This allows the user to specify the location of the ASCII (often a .dat) file and the location of the .sas syntax file, and then load the data frame directly into R in just one step.
 }
 \usage{
-read.SAScii( fn, sas_ri, beginline = 1, buffersize = 50, zipped = F )
+read.SAScii( fn, sas_ri, beginline = 1, buffersize = 50, zipped = F , n = -1 )
 }
 \arguments{
   \item{fn}{
@@ -25,9 +25,13 @@ read.SAScii( fn, sas_ri, beginline = 1, buffersize = 50, zipped = F )
   \item{zipped}{
    Flag noting if ASCII file should be unzipped / decompressed before loading.  Useful when downloading larger data sets directly from a website.
 }
+  \item{n}{
+   the maximum number of records (lines) to be passed to read.fwf(), defaulting to no limit.
+}
 }
 \details{
 This function cannot handle overlapping columns.  For example, in the 2009 National Ambulatory Medical Care Survey (NAMCS) SAS import instructions, columns DIAG1 and DIAG13D will create an error because both start at space 55.
+\cr
 ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/dataset_documentation/namcs/sas/nam09inp.txt.
 }
 \value{
@@ -40,7 +44,69 @@ Anthony Joseph Damico
 Some of the commands below take days to run, depending on your machine.  If you need the Survey of Income and Program Participation, start the program before you quit working for the weekend.
 }
 \examples{
+
+###########
+#Some Data#
+###########
+
+#write an example ASCII data set
+some.data <- "0154hello2304coolgreatZZ\n2034puppy0023nicesweetok\n9900buddy4495    swell!!"
+
+#create temporary ASCII file
+some.data.tf <- tempfile()
+#write the sas code above to that temporary file
+writeLines ( some.data , con = some.data.tf )
+
+#write an example SAS import script using the at method
+sas.import.with.at.signs <-
+	"INPUT
+		@1 NUMBERS1 4.2
+		@5 WORDS1 $ 5.
+		@10 NUMBERS2 2.0
+		@12 NUMBERS3 2.0
+		@14 WORDS2 $4.
+		@18 WORDS3 $5
+		@23 WORDS4 $ 1
+		@24 WORDS5 $ 1
+	;"
+	
+
+#create a temporary file
+sas.import.with.at.signs.tf <- tempfile()
+#write the sas code above to that temporary file
+writeLines ( sas.import.with.at.signs , con = sas.import.with.at.signs.tf )
+
+parse.SAScii( sas.import.with.at.signs.tf )
+
+#using at signs sas script
+read.SAScii( some.data.tf , sas.import.with.at.signs.tf )
+
+
+#write an example SAS import script using the dash method
+sas.import.with.lengths <-
+	"INPUT
+		NUMBERS1 1 - 4 .2
+		WORDS1 $ 5-9
+		NUMBERS2 10 -11
+		NUMBERS3 12- 13 .0
+		WORDS2 $14-17
+		WORDS3$ 18-22
+		WORDS4   $   23-23
+		WORDS5 $24
+	;"
+	
+#create a temporary file
+sas.import.with.lengths.tf <- tempfile()
+#write the sas code above to that temporary file
+writeLines ( sas.import.with.lengths , con = sas.import.with.lengths.tf )
+
+parse.SAScii( sas.import.with.lengths.tf )
+
+#using dash method sas script
+read.SAScii( some.data.tf , sas.import.with.lengths.tf )
+
 \dontrun{
+
 
 #########################################################################################
 #Load the 2009 Medical Expenditure Panel Survey Emergency Room Visits file as an R data frame

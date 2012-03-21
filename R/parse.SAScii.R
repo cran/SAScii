@@ -4,6 +4,9 @@ function( sas_ri , beginline = 1 ){
 	##and now actually pull the entire file into R from the FTP site, line-by-line
 	SASinput <- readLines( sas_ri )
 	
+	#remove all tab characters
+	SASinput <- gsub( "\t" , " " , SASinput )
+	
 	##if the SAS code includes more than one INPUT, start at the user-specified beginline
 	SASinput <- SASinput[ beginline:length(SASinput) ]
 	
@@ -111,12 +114,19 @@ function( sas_ri , beginline = 1 ){
 				SAS.input.lines[ i + 2 ] <- gsub( k , "" , SAS.input.lines[ i + 2 ] , fixed = T )
 			}
 				
-			period <- unlist( gregexpr( "." , SAS.input.lines[ i + 2 ] , fixed = T ) )
-			x[ j , "width" ] <- as.numeric( substr( SAS.input.lines[ i + 2 ] , 1 , period - 1 ) )
+			#if the length has a period, split it
+			if ( grepl( "." , SAS.input.lines[ i + 2 ] , fixed = T ) ){
+				period <- unlist( gregexpr( "." , SAS.input.lines[ i + 2 ] , fixed = T ) )
+				x[ j , "width" ] <- as.numeric( substr( SAS.input.lines[ i + 2 ] , 1 , period - 1 ) )
+				divisor <- substr( SAS.input.lines[ i + 2 ] , period + 1 , nchar( SAS.input.lines[ i + 2 ] ) )
+			} else {
+				x[ j , "width" ] <- as.numeric( SAS.input.lines[ i + 2 ] )
+				divisor <- ""
+			}
 			
-			divisor <- substr( SAS.input.lines[ i + 2 ] , period + 1 , nchar( SAS.input.lines[ i + 2 ] ) )
-			if ( divisor != "" ) x[ j , "divisor" ] <- 1 / 10^as.numeric(divisor)
-			else x[ j , "divisor" ] <- 1
+			if ( divisor != "" ) {
+				x[ j , "divisor" ] <- 1 / 10^as.numeric(divisor)
+			} else x[ j , "divisor" ] <- 1
 			
 			i <- i + 3
 			j <- j + 1
@@ -170,14 +180,48 @@ function( sas_ri , beginline = 1 ){
 			#if there's a dollar sign between first word and the first number, record that this is of type character
 			if ( SAS.input.lines[ i + 1 ] == "$" ){
 				x[ j , "start" ] <- SAS.input.lines[ i + 2 ]
-				x[ j , "end" ] <- SAS.input.lines[ i + 3 ]
+				
+				#check if the width was one number or two..
+				if ( 
+					#if it isn't numeric..
+					is.na( as.numeric( SAS.input.lines[ i + 3 ] ) ) |
+					#or if it contains a period..
+					grepl( "." , SAS.input.lines[ i + 3 ] , fixed = T )
+					){
+						#then it's moved too far because the width was a single digit..
+						x[ j , "end" ] <- x[ j , "start" ]
+						
+						#and it should move back one
+						i <- i - 1
+					} else {
+						#otherwise, if it's a character string, 
+						x[ j , "end" ] <- SAS.input.lines[ i + 3 ]
+					}
+				
 				x[ j , "char" ] <- T
 				i <- i + 4
 			
-				#otherwise record that it's type numeric
+			#otherwise record that it's type numeric
 			} else {
 				x[ j , "start" ] <- SAS.input.lines[ i + 1 ]
-				x[ j , "end" ] <- SAS.input.lines[ i + 2 ]
+
+				#check if the width was one number or two..
+				if ( 
+					#if it isn't numeric..
+					is.na( as.numeric( SAS.input.lines[ i + 2 ] ) )  |
+					#or if it contains a period..
+					grepl( "." , SAS.input.lines[ i + 2 ] , fixed = T )
+					){
+						#then it's moved too far because the width was a single digit..
+						x[ j , "end" ] <- x[ j , "start" ]
+						
+						#and it should move back one
+						i <- i - 1
+					} else {
+						#otherwise, if it's a character string, 
+						x[ j , "end" ] <- SAS.input.lines[ i + 2 ]
+					}
+
 				x[ j , "char" ] <- F
 				i <- i + 3
 			}
