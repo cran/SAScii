@@ -8,7 +8,7 @@ Convert SAS import instructions into the arguments for a read.fwf function call.
 Re-configure the INPUT block of a (.sas) syntax file into the arguments necessary to run the read.fwf function on an ASCII data set.
 }
 \usage{
-parse.SAScii( sas_ri, beginline = 1 )
+parse.SAScii( sas_ri, beginline = 1 , lrecl = NULL )
 }
 \arguments{
   \item{sas_ri}{
@@ -16,6 +16,9 @@ parse.SAScii( sas_ri, beginline = 1 )
 }
   \item{beginline}{
    Line number in SAS import instructions where the INPUT statement begins.  If the word INPUT appears before the actual INPUT block, the function will return an error.
+}
+  \item{lrecl}{
+   LRECL option from SAS code.  Only necessary if the width of the ASCII file is longer than the actual columns containing data (if the file contains empty space on the right side)
 }
 }
 \details{
@@ -135,8 +138,8 @@ sipp.fwf.parameters
 #NATIONAL HEALTH INTERVIEW SURVEY - IMPUTED INCOME#
 ###################################################
 
-#INPUT lines pulled from the 2010 National Health Interview Survey's Imputed Income file
-#ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/NHIS/2010_imputed_income/INCMIMP.sas
+#INPUT lines pulled from the 2011 National Health Interview Survey's Imputed Income file
+#ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Datasets/NHIS/2011_imputed_income/incmimp.sas
 
 nhis.incmimp.sas <- 
 	"   * INPUT ALL VARIABLES;
@@ -168,8 +171,8 @@ nhis.incmimp.fwf.parameters
 #NATIONAL HEALTH INTERVIEW SURVEY - IMPUTED INCOME#
 ###################################################
 
-#INPUT lines pulled from the 2010 National Health Interview Survey's Sample Adult file
-#ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Program_Code/NHIS/2010/SAMADULT.sas
+#INPUT lines pulled from the 2011 National Health Interview Survey's Sample Adult file
+#ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Program_Code/NHIS/2011/samadult.sas
 
 nhis.samadult.sas <- 
 	"   * INPUT ALL VARIABLES;
@@ -219,14 +222,14 @@ MEPS.09.ER.visit.sas <-
 
 #########################################################################################
 #Create the read.fwf parameters required to load the
-#2010 National Health Interview Survey Persons file
+#2011 National Health Interview Survey Persons file
 
-NHIS.10.personsx.SAS.read.in.instructions <- 
-	"ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Program_Code/NHIS/2010/PERSONSX.sas"
+NHIS.11.personsx.SAS.read.in.instructions <- 
+	"ftp://ftp.cdc.gov/pub/Health_Statistics/NCHS/Program_Code/NHIS/2011/personsx.sas"
 
 #store the NHIS SAS import instructions for use in a 
 #read.fwf function call outside of the read.SAScii function
-NHIS.10.personsx.sas <- 
-	parse.SAScii( NHIS.10.personsx.SAS.read.in.instructions )
+NHIS.11.personsx.sas <- 
+	parse.SAScii( NHIS.11.personsx.SAS.read.in.instructions )
 }
 }

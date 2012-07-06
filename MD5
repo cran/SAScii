@@ -1,8 +1,8 @@
-699a36a14a91f1379ffd9ad4d50dbb9a *DESCRIPTION
-f264e660861cce081b482638f920f21e *NAMESPACE
-b29f9b80e01c6eba28a20bd4091ba5a1 *R/SAS.uncomment.R
-fcee70209f9e0b8f6c0230a92a4a962d *R/parse.SAScii.R
-7a11efd679e57845276cc79d91acdfd0 *R/read.SAScii.R
-9759258828354b73979f9e150d90cd78 *man/SAScii-package.Rd
-aaac632a7ab816a3097d57db5b8759e4 *man/parse.SAScii.Rd
-707ce979641b1885a9f8331bf3564cc1 *man/read.SAScii.Rd
+e4729d312b30b47eecdbb8a176fa5da4 *DESCRIPTION
+7a19fee4c642dcdee75ed9e371a6043e *NAMESPACE
+ea24e7362c9b4e86b100b69dc7cab9cf *R/SAS.uncomment.R
+bba1b6caf23cd2e7b5c3a0abcdc0993a *R/parse.SAScii.R
+20b43eb578891b7b3294edf3030d5516 *R/read.SAScii.R
+7a0b6cc4179f04933c6536534bf580c4 *man/SAScii-package.Rd
+5470608699def23ff67ee5fdfff6407c *man/parse.SAScii.Rd
+d55015102ea9372479e414aaf0049665 *man/read.SAScii.Rd
